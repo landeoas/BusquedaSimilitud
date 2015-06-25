@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="subset_artist_similarityModel.Store" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityType Name="artists">
+          <Key>
+            <PropertyRef Name="artist_id" />
+          </Key>
+          <Property Name="artist_id" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+        </EntityType>
+        <EntityType Name="similarity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="target" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="similar" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="ID" Type="integer" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_similarity_0_0">
+          <End Role="artists" Type="Self.artists" Multiplicity="0..1" />
+          <End Role="similarity" Type="Self.similarity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="artists">
+              <PropertyRef Name="artist_id" />
+            </Principal>
+            <Dependent Role="similarity">
+              <PropertyRef Name="target" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_similarity_1_0">
+          <End Role="artists" Type="Self.artists" Multiplicity="0..1" />
+          <End Role="similarity" Type="Self.similarity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="artists">
+              <PropertyRef Name="artist_id" />
+            </Principal>
+            <Dependent Role="similarity">
+              <PropertyRef Name="similar" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="subset_artist_similarityModelStoreContainer">
+          <EntitySet Name="artists" EntityType="Self.artists" store:Type="Tables" />
+          <EntitySet Name="similarity" EntityType="Self.similarity" store:Type="Tables" />
+          <AssociationSet Name="FK_similarity_0_0" Association="Self.FK_similarity_0_0">
+            <End Role="artists" EntitySet="artists" />
+            <End Role="similarity" EntitySet="similarity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_similarity_1_0" Association="Self.FK_similarity_1_0">
+            <End Role="artists" EntitySet="artists" />
+            <End Role="similarity" EntitySet="similarity" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="subset_artist_similarityModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityType Name="artists">
+          <Key>
+            <PropertyRef Name="artist_id" />
+          </Key>
+          <Property Name="artist_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="similarity" Relationship="Self.FK_similarity_0_0" FromRole="artists" ToRole="similarity" />
+          <NavigationProperty Name="similarity1" Relationship="Self.FK_similarity_1_0" FromRole="artists" ToRole="similarity" />
+        </EntityType>
+        <EntityType Name="similarity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="target" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="similar" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="artists" Relationship="Self.FK_similarity_0_0" FromRole="similarity" ToRole="artists" />
+          <NavigationProperty Name="artists1" Relationship="Self.FK_similarity_1_0" FromRole="similarity" ToRole="artists" />
+        </EntityType>
+        <Association Name="FK_similarity_0_0">
+          <End Role="artists" Type="Self.artists" Multiplicity="0..1" />
+          <End Role="similarity" Type="Self.similarity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="artists">
+              <PropertyRef Name="artist_id" />
+            </Principal>
+            <Dependent Role="similarity">
+              <PropertyRef Name="target" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_similarity_1_0">
+          <End Role="artists" Type="Self.artists" Multiplicity="0..1" />
+          <End Role="similarity" Type="Self.similarity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="artists">
+              <PropertyRef Name="artist_id" />
+            </Principal>
+            <Dependent Role="similarity">
+              <PropertyRef Name="similar" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="subset_artist_similarityEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="artists" EntityType="Self.artists" />
+          <EntitySet Name="similarity" EntityType="Self.similarity" />
+          <AssociationSet Name="FK_similarity_0_0" Association="Self.FK_similarity_0_0">
+            <End Role="artists" EntitySet="artists" />
+            <End Role="similarity" EntitySet="similarity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_similarity_1_0" Association="Self.FK_similarity_1_0">
+            <End Role="artists" EntitySet="artists" />
+            <End Role="similarity" EntitySet="similarity" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="subset_artist_similarityModelStoreContainer" CdmEntityContainer="subset_artist_similarityEntities1">
+          <EntitySetMapping Name="artists">
+            <EntityTypeMapping TypeName="subset_artist_similarityModel.artists">
+              <MappingFragment StoreEntitySet="artists">
+                <ScalarProperty Name="artist_id" ColumnName="artist_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="similarity">
+            <EntityTypeMapping TypeName="subset_artist_similarityModel.similarity">
+              <MappingFragment StoreEntitySet="similarity">
+                <ScalarProperty Name="target" ColumnName="target" />
+                <ScalarProperty Name="similar" ColumnName="similar" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
