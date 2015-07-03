@@ -13,13 +13,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Similitud.Web</RootNamespace>
     <AssemblyName>Similitud.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,6 +39,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework">
@@ -45,6 +48,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
@@ -53,11 +57,8 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -116,32 +117,54 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\PrincipalController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\artists.cs">
-      <DependentUpon>ModeloSimilitud.tt</DependentUpon>
+    <Compile Include="Models\canciones.cs">
+      <DependentUpon>MiModelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ModeloSimilitud.Context.cs">
+    <Compile Include="Models\MiModelo.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ModeloSimilitud.Context.tt</DependentUpon>
+      <DependentUpon>MiModelo.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ModeloSimilitud.cs">
+    <Compile Include="Models\MiModelo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ModeloSimilitud.tt</DependentUpon>
+      <DependentUpon>MiModelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ModeloSimilitud.Designer.cs">
+    <Compile Include="Models\MiModelo.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ModeloSimilitud.edmx</DependentUpon>
+      <DependentUpon>MiModelo.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\similarity.cs">
-      <DependentUpon>ModeloSimilitud.tt</DependentUpon>
+    <Compile Include="Models\SeedMillionSong.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SeedMillionSong.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SeedMillionSong.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SeedMillionSong.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SeedMillionSong.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SeedMillionSong.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\segmentos.cs">
+      <DependentUpon>MiModelo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\similares.cs">
+      <DependentUpon>MiModelo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\songs.cs">
+      <DependentUpon>SeedMillionSong.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -150,6 +173,16 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\Bootstrap\css\bootstrap-theme.css" />
+    <Content Include="Scripts\Bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="Scripts\Bootstrap\css\bootstrap.css" />
+    <Content Include="Scripts\Bootstrap\css\bootstrap.min.css" />
+    <Content Include="Scripts\Proyecto\jquery.min.js" />
+    <Content Include="Scripts\Proyecto\EstiloPropio.css" />
+    <Content Include="Scripts\Bootstrap\js\bootstrap.js" />
+    <Content Include="Scripts\Bootstrap\js\bootstrap.min.js" />
+    <Content Include="Scripts\Bootstrap\js\npm.js" />
+    <Content Include="Scripts\Proyecto\JsPropio.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -172,25 +205,60 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="Models\ModeloSimilitud.edmx">
+    <EntityDeploy Include="Models\SeedMillionSong.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ModeloSimilitud.Designer.cs</LastGenOutput>
+      <LastGenOutput>SeedMillionSong.Designer.cs</LastGenOutput>
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Models\ModeloSimilitud.Context.tt">
+    <Content Include="Models\SeedMillionSong.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ModeloSimilitud.edmx</DependentUpon>
-      <LastGenOutput>ModeloSimilitud.Context.cs</LastGenOutput>
+      <DependentUpon>SeedMillionSong.edmx</DependentUpon>
+      <LastGenOutput>SeedMillionSong.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ModeloSimilitud.edmx.diagram">
-      <DependentUpon>ModeloSimilitud.edmx</DependentUpon>
+    <Content Include="Models\SeedMillionSong.edmx.diagram">
+      <DependentUpon>SeedMillionSong.edmx</DependentUpon>
     </Content>
-    <Content Include="Models\ModeloSimilitud.tt">
+    <Content Include="Models\SeedMillionSong.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ModeloSimilitud.edmx</DependentUpon>
-      <LastGenOutput>ModeloSimilitud.cs</LastGenOutput>
+      <DependentUpon>SeedMillionSong.edmx</DependentUpon>
+      <LastGenOutput>SeedMillionSong.cs</LastGenOutput>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Models\MiModelo.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MiModelo.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\MiModelo.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MiModelo.edmx</DependentUpon>
+      <LastGenOutput>MiModelo.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\MiModelo.edmx.diagram">
+      <DependentUpon>MiModelo.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\MiModelo.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MiModelo.edmx</DependentUpon>
+      <LastGenOutput>MiModelo.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\Bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="Scripts\Bootstrap\css\bootstrap.css.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\Bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Scripts\Bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Scripts\Bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Scripts\Bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Scripts\Bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\PlayListSpotify.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

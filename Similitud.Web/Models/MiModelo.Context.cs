@@ -13,10 +13,10 @@ namespace Similitud.Web.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class subset_artist_similarityEntities1 : DbContext
+    public partial class ModeloSimilitudEntities : DbContext
     {
-        public subset_artist_similarityEntities1()
-            : base("name=subset_artist_similarityEntities1")
+        public ModeloSimilitudEntities()
+            : base("name=ModeloSimilitudEntities")
         {
         }
     
@@ -25,7 +25,8 @@ namespace Similitud.Web.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<artists> artists { get; set; }
-        public DbSet<similarity> similarity { get; set; }
+        public DbSet<canciones> canciones { get; set; }
+        public DbSet<segmentos> segmentos { get; set; }
+        public DbSet<similares> similares { get; set; }
     }
 }

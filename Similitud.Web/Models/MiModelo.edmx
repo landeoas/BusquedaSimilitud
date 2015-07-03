@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ModeloSimilitudModel.Store" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityType Name="canciones">
+          <Key>
+            <PropertyRef Name="track_id" />
+          </Key>
+          <Property Name="track_id" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="song_id" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="artist_id" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="artist_mbid" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="artist_name" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="duration" Type="real" Nullable="false" />
+          <Property Name="artist_familiarity" Type="real" />
+          <Property Name="artist_hotttnesss" Type="real" />
+          <Property Name="year" Type="int" Nullable="false" />
+          <Property Name="energy" Type="real" Nullable="false" />
+          <Property Name="liveness" Type="real" Nullable="false" />
+          <Property Name="tempo" Type="real" Nullable="false" />
+          <Property Name="speechiness" Type="real" Nullable="false" />
+          <Property Name="acousticness" Type="real" Nullable="false" />
+          <Property Name="loudness" Type="real" Nullable="false" />
+          <Property Name="valence" Type="real" Nullable="false" />
+          <Property Name="danceability" Type="real" Nullable="false" />
+          <Property Name="instrumentalness" Type="real" Nullable="false" />
+          <Property Name="id_spotify" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="key" Type="int" />
+        </EntityType>
+        <EntityType Name="segmentos">
+          <Key>
+            <PropertyRef Name="id_segment" />
+          </Key>
+          <Property Name="id_segment" Type="int" Nullable="false" />
+          <Property Name="track_id" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="start" Type="real" Nullable="false" />
+          <Property Name="duration" Type="real" Nullable="false" />
+          <Property Name="confidence" Type="real" Nullable="false" />
+          <Property Name="loudness_start" Type="real" Nullable="false" />
+          <Property Name="loudness_max_time" Type="real" Nullable="false" />
+          <Property Name="loudness_max" Type="real" Nullable="false" />
+          <Property Name="pitch1" Type="real" />
+          <Property Name="pitch2" Type="real" />
+          <Property Name="pitch3" Type="real" />
+          <Property Name="pitch4" Type="real" />
+          <Property Name="pitch5" Type="real" />
+          <Property Name="pitch6" Type="real" />
+          <Property Name="pitch7" Type="real" />
+          <Property Name="pitch8" Type="real" />
+          <Property Name="pitch9" Type="real" />
+          <Property Name="pitch10" Type="real" />
+          <Property Name="pitch11" Type="real" />
+          <Property Name="pitch12" Type="real" />
+          <Property Name="timbre1" Type="real" />
+          <Property Name="timbre2" Type="real" />
+          <Property Name="timbre3" Type="real" />
+          <Property Name="timbre4" Type="real" />
+          <Property Name="timbre5" Type="real" />
+          <Property Name="timbre6" Type="real" />
+          <Property Name="timbre7" Type="real" />
+          <Property Name="timbre8" Type="real" />
+          <Property Name="timbre9" Type="real" />
+          <Property Name="timbre10" Type="real" />
+          <Property Name="timbre11" Type="real" />
+          <Property Name="timbre12" Type="real" />
+          <Property Name="fingerprint_code" Type="int" />
+        </EntityType>
+        <EntityType Name="similares">
+          <Key>
+            <PropertyRef Name="similarity_id" />
+          </Key>
+          <Property Name="similarity_id" Type="int" Nullable="false" />
+          <Property Name="track_id" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="track_id_similar1" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="track_id_similar2" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="track_id_similar3" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="track_id_similar4" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="track_id_similar5" Type="nvarchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityContainer Name="ModeloSimilitudModelStoreContainer">
+          <EntitySet Name="canciones" EntityType="Self.canciones" store:Type="Tables" />
+          <EntitySet Name="segmentos" EntityType="Self.segmentos" store:Type="Tables" />
+          <EntitySet Name="similares" EntityType="Self.similares" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ModeloSimilitudModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityType Name="canciones">
+          <Key>
+            <PropertyRef Name="track_id" />
+          </Key>
+          <Property Name="track_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="song_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="artist_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="artist_mbid" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="artist_name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="duration" Type="Double" Nullable="false" />
+          <Property Name="artist_familiarity" Type="Double" />
+          <Property Name="artist_hotttnesss" Type="Double" />
+          <Property Name="year" Type="Int32" Nullable="false" />
+          <Property Name="energy" Type="Double" Nullable="false" />
+          <Property Name="liveness" Type="Double" Nullable="false" />
+          <Property Name="tempo" Type="Double" Nullable="false" />
+          <Property Name="speechiness" Type="Double" Nullable="false" />
+          <Property Name="acousticness" Type="Double" Nullable="false" />
+          <Property Name="loudness" Type="Double" Nullable="false" />
+          <Property Name="valence" Type="Double" Nullable="false" />
+          <Property Name="danceability" Type="Double" Nullable="false" />
+          <Property Name="instrumentalness" Type="Double" Nullable="false" />
+          <Property Name="id_spotify" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="key" Type="Int32" />
+        </EntityType>
+        <EntityType Name="segmentos">
+          <Key>
+            <PropertyRef Name="id_segment" />
+          </Key>
+          <Property Name="id_segment" Type="Int32" Nullable="false" />
+          <Property Name="track_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="start" Type="Double" Nullable="false" />
+          <Property Name="duration" Type="Double" Nullable="false" />
+          <Property Name="confidence" Type="Double" Nullable="false" />
+          <Property Name="loudness_start" Type="Double" Nullable="false" />
+          <Property Name="loudness_max_time" Type="Double" Nullable="false" />
+          <Property Name="loudness_max" Type="Double" Nullable="false" />
+          <Property Name="pitch1" Type="Double" />
+          <Property Name="pitch2" Type="Double" />
+          <Property Name="pitch3" Type="Double" />
+          <Property Name="pitch4" Type="Double" />
+          <Property Name="pitch5" Type="Double" />
+          <Property Name="pitch6" Type="Double" />
+          <Property Name="pitch7" Type="Double" />
+          <Property Name="pitch8" Type="Double" />
+          <Property Name="pitch9" Type="Double" />
+          <Property Name="pitch10" Type="Double" />
+          <Property Name="pitch11" Type="Double" />
+          <Property Name="pitch12" Type="Double" />
+          <Property Name="timbre1" Type="Double" />
+          <Property Name="timbre2" Type="Double" />
+          <Property Name="timbre3" Type="Double" />
+          <Property Name="timbre4" Type="Double" />
+          <Property Name="timbre5" Type="Double" />
+          <Property Name="timbre6" Type="Double" />
+          <Property Name="timbre7" Type="Double" />
+          <Property Name="timbre8" Type="Double" />
+          <Property Name="timbre9" Type="Double" />
+          <Property Name="timbre10" Type="Double" />
+          <Property Name="timbre11" Type="Double" />
+          <Property Name="timbre12" Type="Double" />
+          <Property Name="fingerprint_code" Type="Int32" />
+        </EntityType>
+        <EntityType Name="similares">
+          <Key>
+            <PropertyRef Name="similarity_id" />
+          </Key>
+          <Property Name="similarity_id" Type="Int32" Nullable="false" />
+          <Property Name="track_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="track_id_similar1" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="track_id_similar2" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="track_id_similar3" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="track_id_similar4" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="track_id_similar5" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="ModeloSimilitudEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="canciones" EntityType="Self.canciones" />
+          <EntitySet Name="segmentos" EntityType="Self.segmentos" />
+          <EntitySet Name="similares" EntityType="Self.similares" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModeloSimilitudModelStoreContainer" CdmEntityContainer="ModeloSimilitudEntities">
+          <EntitySetMapping Name="canciones">
+            <EntityTypeMapping TypeName="ModeloSimilitudModel.canciones">
+              <MappingFragment StoreEntitySet="canciones">
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="track_id" ColumnName="track_id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="song_id" ColumnName="song_id" />
+                <ScalarProperty Name="artist_id" ColumnName="artist_id" />
+                <ScalarProperty Name="artist_mbid" ColumnName="artist_mbid" />
+                <ScalarProperty Name="artist_name" ColumnName="artist_name" />
+                <ScalarProperty Name="duration" ColumnName="duration" />
+                <ScalarProperty Name="artist_familiarity" ColumnName="artist_familiarity" />
+                <ScalarProperty Name="artist_hotttnesss" ColumnName="artist_hotttnesss" />
+                <ScalarProperty Name="year" ColumnName="year" />
+                <ScalarProperty Name="energy" ColumnName="energy" />
+                <ScalarProperty Name="liveness" ColumnName="liveness" />
+                <ScalarProperty Name="tempo" ColumnName="tempo" />
+                <ScalarProperty Name="speechiness" ColumnName="speechiness" />
+                <ScalarProperty Name="acousticness" ColumnName="acousticness" />
+                <ScalarProperty Name="loudness" ColumnName="loudness" />
+                <ScalarProperty Name="valence" ColumnName="valence" />
+                <ScalarProperty Name="danceability" ColumnName="danceability" />
+                <ScalarProperty Name="instrumentalness" ColumnName="instrumentalness" />
+                <ScalarProperty Name="id_spotify" ColumnName="id_spotify" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="segmentos">
+            <EntityTypeMapping TypeName="ModeloSimilitudModel.segmentos">
+              <MappingFragment StoreEntitySet="segmentos">
+                <ScalarProperty Name="id_segment" ColumnName="id_segment" />
+                <ScalarProperty Name="track_id" ColumnName="track_id" />
+                <ScalarProperty Name="start" ColumnName="start" />
+                <ScalarProperty Name="duration" ColumnName="duration" />
+                <ScalarProperty Name="confidence" ColumnName="confidence" />
+                <ScalarProperty Name="loudness_start" ColumnName="loudness_start" />
+                <ScalarProperty Name="loudness_max_time" ColumnName="loudness_max_time" />
+                <ScalarProperty Name="loudness_max" ColumnName="loudness_max" />
+                <ScalarProperty Name="pitch1" ColumnName="pitch1" />
+                <ScalarProperty Name="pitch2" ColumnName="pitch2" />
+                <ScalarProperty Name="pitch3" ColumnName="pitch3" />
+                <ScalarProperty Name="pitch4" ColumnName="pitch4" />
+                <ScalarProperty Name="pitch5" ColumnName="pitch5" />
+                <ScalarProperty Name="pitch6" ColumnName="pitch6" />
+                <ScalarProperty Name="pitch7" ColumnName="pitch7" />
+                <ScalarProperty Name="pitch8" ColumnName="pitch8" />
+                <ScalarProperty Name="pitch9" ColumnName="pitch9" />
+                <ScalarProperty Name="pitch10" ColumnName="pitch10" />
+                <ScalarProperty Name="pitch11" ColumnName="pitch11" />
+                <ScalarProperty Name="pitch12" ColumnName="pitch12" />
+                <ScalarProperty Name="timbre1" ColumnName="timbre1" />
+                <ScalarProperty Name="timbre2" ColumnName="timbre2" />
+                <ScalarProperty Name="timbre3" ColumnName="timbre3" />
+                <ScalarProperty Name="timbre4" ColumnName="timbre4" />
+                <ScalarProperty Name="timbre5" ColumnName="timbre5" />
+                <ScalarProperty Name="timbre6" ColumnName="timbre6" />
+                <ScalarProperty Name="timbre7" ColumnName="timbre7" />
+                <ScalarProperty Name="timbre8" ColumnName="timbre8" />
+                <ScalarProperty Name="timbre9" ColumnName="timbre9" />
+                <ScalarProperty Name="timbre10" ColumnName="timbre10" />
+                <ScalarProperty Name="timbre11" ColumnName="timbre11" />
+                <ScalarProperty Name="timbre12" ColumnName="timbre12" />
+                <ScalarProperty Name="fingerprint_code" ColumnName="fingerprint_code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="similares">
+            <EntityTypeMapping TypeName="ModeloSimilitudModel.similares">
+              <MappingFragment StoreEntitySet="similares">
+                <ScalarProperty Name="similarity_id" ColumnName="similarity_id" />
+                <ScalarProperty Name="track_id" ColumnName="track_id" />
+                <ScalarProperty Name="track_id_similar1" ColumnName="track_id_similar1" />
+                <ScalarProperty Name="track_id_similar2" ColumnName="track_id_similar2" />
+                <ScalarProperty Name="track_id_similar3" ColumnName="track_id_similar3" />
+                <ScalarProperty Name="track_id_similar4" ColumnName="track_id_similar4" />
+                <ScalarProperty Name="track_id_similar5" ColumnName="track_id_similar5" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

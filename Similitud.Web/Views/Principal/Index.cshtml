@@ -9,14 +9,39 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <script type="text/javascript" src="~/Scripts/Proyecto/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap.css")" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Scripts/Bootstrap/css/bootstrap-theme.css")" />
+    <script src="@Url.Content("~/Scripts/Bootstrap/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/Proyecto/JsPropio.js")"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Scripts/Proyecto/EstiloPropio.css")" />
     <title>Index</title>
 </head>
 <body>
-    <div>
-        
-    </div>
-    <div>
-        <iframe src="https://embed.spotify.com/?uri=spotify:track:4fYoggJNnlMIWxHNI0NzPa" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+    <div class="container">
+        <div class="page-header">
+            <h1>Sistema de Búsqueda de Canciones Similares</h1>
+        </div>
+        <div class="row">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="url">Ingrese URL</label>
+                    <input type="text" class="form-control" id="url" placeholder="URL">
+                </div>
+                <button id="btnURL" class="btn btn-default" onclick="enviarURL()">Buscar Similares</button>
+            </form>
+        </div>
+        <div class="row">
+            <div id="miAudio">
+
+            </div>
+            <div id="PlayList">
+
+            </div>
+        </div>
     </div>
 </body>
 </html>
+<script>
+    var path = "";
+</script>

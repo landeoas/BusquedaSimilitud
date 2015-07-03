@@ -12,17 +12,18 @@ namespace Similitud.Web.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class artists
+    public partial class songs
     {
-        public artists()
-        {
-            this.similarity = new HashSet<similarity>();
-            this.similarity1 = new HashSet<similarity>();
-        }
-    
+        public string track_id { get; set; }
+        public string title { get; set; }
+        public string song_id { get; set; }
+        public string release { get; set; }
         public string artist_id { get; set; }
-    
-        public virtual ICollection<similarity> similarity { get; set; }
-        public virtual ICollection<similarity> similarity1 { get; set; }
+        public string artist_mbid { get; set; }
+        public string artist_name { get; set; }
+        public Nullable<double> duration { get; set; }
+        public Nullable<double> artist_familiarity { get; set; }
+        public Nullable<double> artist_hotttnesss { get; set; }
+        public Nullable<int> year { get; set; }
     }
 }

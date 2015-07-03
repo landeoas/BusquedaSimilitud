@@ -1,0 +1,23 @@
+﻿@{
+    Layout = null;
+    var ListaItems = ViewData.Model;
+    var trackOriginal = ListaItems[0];
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+</head>
+<body>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Track Similares</h3>
+        </div>
+        <div class="panel-body">
+            <iframe src="https://embed.spotify.com/?uri=@trackOriginal" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+        </div>
+    </div>
+</body>
+</html>

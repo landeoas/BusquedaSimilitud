@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="subset_track_metadataModel.Store" Provider="System.Data.SQLite" ProviderManifestToken="ISO8601" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityType Name="songs">
+          <Key>
+            <PropertyRef Name="track_id" />
+          </Key>
+          <Property Name="track_id" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="song_id" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="release" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="artist_id" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="artist_mbid" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="artist_name" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="duration" Type="real" />
+          <Property Name="artist_familiarity" Type="real" />
+          <Property Name="artist_hotttnesss" Type="real" />
+          <Property Name="year" Type="int" />
+        </EntityType>
+        <EntityContainer Name="subset_track_metadataModelStoreContainer">
+          <EntitySet Name="songs" EntityType="Self.songs" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="subset_track_metadataModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityType Name="songs">
+          <Key>
+            <PropertyRef Name="track_id" />
+          </Key>
+          <Property Name="track_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="song_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="release" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="artist_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="artist_mbid" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="artist_name" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="duration" Type="Double" />
+          <Property Name="artist_familiarity" Type="Double" />
+          <Property Name="artist_hotttnesss" Type="Double" />
+          <Property Name="year" Type="Int32" />
+        </EntityType>
+        <EntityContainer Name="subset_track_metadataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="songs" EntityType="Self.songs" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="subset_track_metadataModelStoreContainer" CdmEntityContainer="subset_track_metadataEntities">
+          <EntitySetMapping Name="songs">
+            <EntityTypeMapping TypeName="subset_track_metadataModel.songs">
+              <MappingFragment StoreEntitySet="songs">
+                <ScalarProperty Name="track_id" ColumnName="track_id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="song_id" ColumnName="song_id" />
+                <ScalarProperty Name="release" ColumnName="release" />
+                <ScalarProperty Name="artist_id" ColumnName="artist_id" />
+                <ScalarProperty Name="artist_mbid" ColumnName="artist_mbid" />
+                <ScalarProperty Name="artist_name" ColumnName="artist_name" />
+                <ScalarProperty Name="duration" ColumnName="duration" />
+                <ScalarProperty Name="artist_familiarity" ColumnName="artist_familiarity" />
+                <ScalarProperty Name="artist_hotttnesss" ColumnName="artist_hotttnesss" />
+                <ScalarProperty Name="year" ColumnName="year" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

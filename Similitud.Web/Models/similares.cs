@@ -12,13 +12,14 @@ namespace Similitud.Web.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class similarity
+    public partial class similares
     {
-        public string target { get; set; }
-        public string similar { get; set; }
-        public long ID { get; set; }
-    
-        public virtual artists artists { get; set; }
-        public virtual artists artists1 { get; set; }
+        public int similarity_id { get; set; }
+        public string track_id { get; set; }
+        public string track_id_similar1 { get; set; }
+        public string track_id_similar2 { get; set; }
+        public string track_id_similar3 { get; set; }
+        public string track_id_similar4 { get; set; }
+        public string track_id_similar5 { get; set; }
     }
 }
