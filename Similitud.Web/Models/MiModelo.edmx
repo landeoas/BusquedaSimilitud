@@ -73,13 +73,12 @@
           <Key>
             <PropertyRef Name="similarity_id" />
           </Key>
-          <Property Name="similarity_id" Type="int" Nullable="false" />
-          <Property Name="track_id" Type="nvarchar" MaxLength="2147483647" />
-          <Property Name="track_id_similar1" Type="nvarchar" MaxLength="2147483647" />
-          <Property Name="track_id_similar2" Type="nvarchar" MaxLength="2147483647" />
-          <Property Name="track_id_similar3" Type="nvarchar" MaxLength="2147483647" />
-          <Property Name="track_id_similar4" Type="nvarchar" MaxLength="2147483647" />
-          <Property Name="track_id_similar5" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="similarity_id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Artist_Original" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="Song_Original" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="Artist_Similar" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="Song_Similar" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="Valor_Similitud" Type="int" />
         </EntityType>
         <EntityContainer Name="ModeloSimilitudModelStoreContainer">
           <EntitySet Name="canciones" EntityType="Self.canciones" store:Type="Tables" />
@@ -154,23 +153,22 @@
           <Property Name="timbre12" Type="Double" />
           <Property Name="fingerprint_code" Type="Int32" />
         </EntityType>
+        <EntityContainer Name="ModeloSimilitudEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="canciones" EntityType="Self.canciones" />
+          <EntitySet Name="segmentos" EntityType="Self.segmentos" />
+          <EntitySet Name="similares" EntityType="ModeloSimilitudModel.similares" />
+        </EntityContainer>
         <EntityType Name="similares">
           <Key>
             <PropertyRef Name="similarity_id" />
           </Key>
-          <Property Name="similarity_id" Type="Int32" Nullable="false" />
-          <Property Name="track_id" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="track_id_similar1" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="track_id_similar2" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="track_id_similar3" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="track_id_similar4" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="track_id_similar5" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="similarity_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Artist_Original" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="Song_Original" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="Artist_Similar" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="Song_Similar" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="Valor_Similitud" Type="Int32" />
         </EntityType>
-        <EntityContainer Name="ModeloSimilitudEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="canciones" EntityType="Self.canciones" />
-          <EntitySet Name="segmentos" EntityType="Self.segmentos" />
-          <EntitySet Name="similares" EntityType="Self.similares" />
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -246,13 +244,12 @@
           <EntitySetMapping Name="similares">
             <EntityTypeMapping TypeName="ModeloSimilitudModel.similares">
               <MappingFragment StoreEntitySet="similares">
+                <ScalarProperty Name="Valor_Similitud" ColumnName="Valor_Similitud" />
+                <ScalarProperty Name="Song_Similar" ColumnName="Song_Similar" />
+                <ScalarProperty Name="Artist_Similar" ColumnName="Artist_Similar" />
+                <ScalarProperty Name="Song_Original" ColumnName="Song_Original" />
+                <ScalarProperty Name="Artist_Original" ColumnName="Artist_Original" />
                 <ScalarProperty Name="similarity_id" ColumnName="similarity_id" />
-                <ScalarProperty Name="track_id" ColumnName="track_id" />
-                <ScalarProperty Name="track_id_similar1" ColumnName="track_id_similar1" />
-                <ScalarProperty Name="track_id_similar2" ColumnName="track_id_similar2" />
-                <ScalarProperty Name="track_id_similar3" ColumnName="track_id_similar3" />
-                <ScalarProperty Name="track_id_similar4" ColumnName="track_id_similar4" />
-                <ScalarProperty Name="track_id_similar5" ColumnName="track_id_similar5" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

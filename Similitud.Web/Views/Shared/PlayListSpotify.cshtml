@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
     var ListaItems = ViewData.Model;
-    var trackOriginal = ListaItems[0];
+    var trackOriginal = ListaItems;
 }
 
 <!DOCTYPE html>
@@ -16,7 +16,13 @@
             <h3 class="panel-title">Track Similares</h3>
         </div>
         <div class="panel-body">
-            <iframe src="https://embed.spotify.com/?uri=@trackOriginal" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+            @for (int i = 0; i < 5; i++)
+            {
+                <div style="width:100%">
+                    <iframe src="https://embed.spotify.com/?uri=@trackOriginal[i]" width="300" height="80" frameborder="0" allowtransparency="true"></iframe>
+                </div>
+            }
+
         </div>
     </div>
 </body>

@@ -4,10 +4,10 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c245975b433646e9b7d45ee7954c8562" Name="Diagram1" ZoomLevel="81">
+      <Diagram DiagramId="c245975b433646e9b7d45ee7954c8562" Name="Diagram1" ZoomLevel="78">
         <EntityTypeShape EntityType="ModeloSimilitudModel.canciones" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ModeloSimilitudModel.segmentos" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloSimilitudModel.similares" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ModeloSimilitudModel.similares" Width="1.5" PointX="5" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

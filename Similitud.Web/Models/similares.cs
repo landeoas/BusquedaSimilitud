@@ -14,12 +14,11 @@ namespace Similitud.Web.Models
     
     public partial class similares
     {
-        public int similarity_id { get; set; }
-        public string track_id { get; set; }
-        public string track_id_similar1 { get; set; }
-        public string track_id_similar2 { get; set; }
-        public string track_id_similar3 { get; set; }
-        public string track_id_similar4 { get; set; }
-        public string track_id_similar5 { get; set; }
+        public long similarity_id { get; set; }
+        public string Artist_Original { get; set; }
+        public string Song_Original { get; set; }
+        public string Artist_Similar { get; set; }
+        public string Song_Similar { get; set; }
+        public Nullable<int> Valor_Similitud { get; set; }
     }
 }
