@@ -27,7 +27,8 @@ namespace Similitud.Web.Controllers
         {
             //CargadoCanciones();
             //ExportarCSVFormat();
-            getSimilaresLastFM();
+            //getSimilaresLastFM();
+            //SaveSimilarCanciones();
             return View();
         }
 
@@ -37,10 +38,11 @@ namespace Similitud.Web.Controllers
 
             List<similares> ListaSimilares = db.similares.ToList();
             string id_song, json, jsonResult;
-            for (int i = 0; i <= ListaSimilares.Count; i++)
+            for (int i = 0; i < ListaSimilares.Count; i++)
             {
+                ModeloSimilitudEntities database = new ModeloSimilitudEntities();
                 similares similar = ListaSimilares[i];
-                int milliseconds = 3000;
+                int milliseconds = 3500;
                 Thread.Sleep(milliseconds);
                 String artist_similar = similar.Artist_Similar;
                 String song_similar = similar.Song_Similar;
@@ -83,16 +85,56 @@ namespace Similitud.Web.Controllers
                         cancion.artist_familiarity = 0;//falta
                         cancion.artist_hotttnesss = 0;//falta
                         cancion.year = 0;//falta
-                        db.canciones.Add(cancion);
-                        int numberOfObjects = db.SaveChanges();
+                        database.canciones.Add(cancion);
+                        int numberOfObjects = database.SaveChanges();
                     }
                     catch (Exception e)
                     {
-                        System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros2.txt", similar.Song_Similar + Environment.NewLine);
+                        
+                        System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros6.txt", similar.Song_Similar+" "+i + Environment.NewLine);
                     }
                 }
 
             }
+        }
+        public ActionResult ObtenerSimilaresxTitulo(string titulo,string artista)
+        {
+            List<String> IdSpotify = new List<String>();
+            try
+            {
+                titulo = JsonConvert.DeserializeObject<String>(titulo);
+                artista = JsonConvert.DeserializeObject<String>(artista);
+
+
+                String json = "http://developer.echonest.com/api/v4/song/search?api_key=ERYL0FA7VZ24XQMOO&format=json&results=1&artist=" + artista + "&title=" + titulo + "&bucket=id:spotify&bucket=tracks&limit=true&bucket=audio_summary";
+                String jsonResult = SONGGET(json);
+
+                JObject jObject = JObject.Parse(jsonResult);
+                Array arraySongs = ((jObject["response"])["songs"]).ToArray();
+                JToken tokenSongs = (JToken)(arraySongs.GetValue(0));
+                JToken tokenSummary = tokenSongs["audio_summary"];
+                List<Double> descriptoresEntrada = new List<Double>();
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["energy"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["liveness"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["tempo"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["speechiness"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["acousticness"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["loudness"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["valence"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["danceability"].ToString()));
+                descriptoresEntrada.Add(Double.Parse(tokenSummary["instrumentalness"].ToString()));
+                descriptoresEntrada.Add(int.Parse(tokenSummary["key"].ToString()));
+
+                List<String> listaItems = GetSimilaresDatabase(descriptoresEntrada);
+                IdSpotify = getIdsSpotify(listaItems);
+            }
+            catch (Exception e)
+            {
+                PartialView("PlayListSpotify", IdSpotify);
+            }
+
+            return PartialView("PlayListSpotify", IdSpotify);
+
         }
         public ActionResult ObtenerSimilares(string URL)
         {

@@ -22,13 +22,25 @@
         <div class="page-header">
             <h1>Sistema de Búsqueda de Canciones Similares</h1>
         </div>
+        
         <div class="row">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="url">Ingrese URL</label>
-                    <input type="text" class="form-control" id="url" placeholder="URL">
+                    <div class="bloque">
+                        <input type="radio" name="entrada" value="url" checked id="urlButton">Ingrese URL
+                        <br>
+                        <input type="radio" name="entrada" value="title" id="titleButton">Ingrese Titulo y Artista
+                    </div>
+                    <div class="bloque">
+                        <input type="text" class="form-control" id="url" placeholder="URL">
+
+                        <input type="text" class="form-control" id="titulo" placeholder="Titulo">
+                        <input type="text" class="form-control" id="artista" placeholder="Artista">
+                    </div>
+                    </div>
+                <div style="margin:10px">
+                    <button id="btnURL" class="btn btn-default" onclick="enviarURL()">Buscar Similares</button>
                 </div>
-                <button id="btnURL" class="btn btn-default" onclick="enviarURL()">Buscar Similares</button>
             </form>
         </div>
         <div class="row">
@@ -44,4 +56,17 @@
 </html>
 <script>
     var path = "";
+    $("#titulo").hide();
+    $("#artista").hide();
+
+    $("#urlButton").on("click", function () {
+        $("#url").show();
+        $("#titulo").hide();
+        $("#artista").hide();
+    });
+    $("#titleButton").on("click", function () {
+        $("#url").hide();
+        $("#titulo").show();
+        $("#artista").show();
+    });
 </script>
