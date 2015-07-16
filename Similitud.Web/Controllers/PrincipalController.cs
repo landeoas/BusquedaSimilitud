@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using System.Timers;
 using System.Threading;
 using Newtonsoft.Json;
+using Accord.MachineLearning;
 
 namespace Similitud.Web.Controllers
 {
@@ -32,71 +33,32 @@ namespace Similitud.Web.Controllers
             return View();
         }
 
-        private void SaveSimilarCanciones()
+        
+        public String getIDSpotify(string titulo, string artista)
         {
-            ModeloSimilitudEntities db = new ModeloSimilitudEntities();
-
-            List<similares> ListaSimilares = db.similares.ToList();
-            string id_song, json, jsonResult;
-            for (int i = 0; i < ListaSimilares.Count; i++)
+            titulo = JsonConvert.DeserializeObject<String>(titulo);
+            artista = JsonConvert.DeserializeObject<String>(artista);
+            String id;
+            String json = "http://developer.echonest.com/api/v4/song/search?api_key=ERYL0FA7VZ24XQMOO&format=json&results=1&artist=" + artista + "&title=" + titulo + "&bucket=id:spotify&bucket=tracks&limit=true&bucket=audio_summary";
+            String jsonResult = SONGGET(json);
+            JObject jObject = JObject.Parse(jsonResult);
+            Array arraySongs = ((jObject["response"])["songs"]).ToArray();
+            JToken tokenSongs = (JToken)(arraySongs.GetValue(0));
+            Array arrayTracks = tokenSongs["tracks"].ToArray();
+            JToken tokenTracks = (JToken)arrayTracks.GetValue(0);
+            id = tokenTracks["foreign_id"].ToString();
+            return id;
+        }//Método para idspotify x título y artista
+        private List<String> getIdsSpotify(List<String> listaIndices)
+        {
+            List<String> getIdsSpotify = new List<String>(); ModeloSimilitudEntities db = new ModeloSimilitudEntities();
+            List<canciones> musicas = db.canciones.ToList();
+            foreach (String indice in listaIndices)
             {
-                ModeloSimilitudEntities database = new ModeloSimilitudEntities();
-                similares similar = ListaSimilares[i];
-                int milliseconds = 3500;
-                Thread.Sleep(milliseconds);
-                String artist_similar = similar.Artist_Similar;
-                String song_similar = similar.Song_Similar;
-
-                json = "http://developer.echonest.com/api/v4/song/search?api_key=ERYL0FA7VZ24XQMOO&format=json&results=1&artist=" + artist_similar + "&title=" + song_similar + "&bucket=id:spotify&bucket=tracks&limit=true&bucket=audio_summary";
-                jsonResult = SONGGET(json);
-                if (!jsonResult.Equals(""))
-                {
-                    string cancionesNoEncontradas = "";
-                    canciones cancion = new canciones();
-                    try
-                    {
-                        JObject jObject = JObject.Parse(jsonResult);
-                        Array arraySongs = ((jObject["response"])["songs"]).ToArray();
-                        JToken tokenSongs = (JToken)(arraySongs.GetValue(0));
-                        JToken tokenSummary = tokenSongs["audio_summary"];
-
-                        cancion.energy = Double.Parse(tokenSummary["energy"].ToString());
-                        cancion.liveness = Double.Parse(tokenSummary["liveness"].ToString());
-                        cancion.tempo = Double.Parse(tokenSummary["tempo"].ToString());
-                        cancion.speechiness = Double.Parse(tokenSummary["speechiness"].ToString());
-                        cancion.acousticness = Double.Parse(tokenSummary["acousticness"].ToString());
-                        cancion.loudness = Double.Parse(tokenSummary["loudness"].ToString());
-                        cancion.valence = Double.Parse(tokenSummary["valence"].ToString());
-                        cancion.danceability = Double.Parse(tokenSummary["danceability"].ToString());
-                        cancion.instrumentalness = Double.Parse(tokenSummary["instrumentalness"].ToString());
-                        cancion.key = int.Parse(tokenSummary["key"].ToString());
-
-                        Array arrayTracks = tokenSongs["tracks"].ToArray();
-                        JToken tokenTracks = (JToken)arrayTracks.GetValue(0);
-                        cancion.id_spotify = tokenTracks["foreign_id"].ToString();
-
-                        cancion.track_id = tokenTracks["id"].ToString();
-                        cancion.title = tokenSongs["title"].ToString();
-                        cancion.song_id = tokenSongs["id"].ToString();
-                        cancion.artist_id = tokenSongs["artist_id"].ToString();
-                        cancion.artist_mbid = "";//falta
-                        cancion.artist_name = tokenSongs["artist_name"].ToString();
-                        cancion.duration = Double.Parse(tokenSummary["duration"].ToString());
-                        cancion.artist_familiarity = 0;//falta
-                        cancion.artist_hotttnesss = 0;//falta
-                        cancion.year = 0;//falta
-                        database.canciones.Add(cancion);
-                        int numberOfObjects = database.SaveChanges();
-                    }
-                    catch (Exception e)
-                    {
-                        
-                        System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros6.txt", similar.Song_Similar+" "+i + Environment.NewLine);
-                    }
-                }
-
+                getIdsSpotify.Add((musicas[Int32.Parse(indice)]).id_spotify);
             }
-        }
+            return getIdsSpotify;
+        }//Similar al 1ero pero trae una lista
         public ActionResult ObtenerSimilaresxTitulo(string titulo,string artista)
         {
             List<String> IdSpotify = new List<String>();
@@ -136,6 +98,69 @@ namespace Similitud.Web.Controllers
             return PartialView("PlayListSpotify", IdSpotify);
 
         }
+        private List<String> GetSimilaresDatabase(List<Double> descriptoresEntrada)
+        {
+            List<Double> listaItems;
+            List<Double> descEntradaNormalizado = Normalizar(descriptoresEntrada);
+            int centroide = DiferenciaCentroides(descEntradaNormalizado);
+            listaItems = CancionesEnCluster(centroide);
+            List<List<Double>> matrizNormalizado = csvtoMatrix("descriptoresNormalizados");
+            List<String> listaSimilares = new List<String>();
+            List<int> listaIndicesSimilares = new List<int>();
+
+            for (int j = 0; j < 15; j++)
+            {
+                int indiceBuscado = 0,indiceLista=0;
+                double distancia = 9999;
+                for (int i = 0; i < listaItems.Count;i++)
+                {
+                    if (!listaIndicesSimilares.Contains(i))
+                    {
+                        Double distanciaTemporal;
+                        int indiceNormal = Int32.Parse(listaItems[i].ToString()) - 1;//porque el indice en la matriz es uno menos
+
+                        distanciaTemporal = distanciaEuclidea(descEntradaNormalizado, matrizNormalizado[indiceNormal]);
+
+                        if (distanciaTemporal < distancia)
+                        {
+                            distancia = distanciaTemporal;
+                            indiceBuscado = indiceNormal;
+                            indiceLista = i;
+                        }
+                    }
+                }
+                listaIndicesSimilares.Add(indiceLista);
+                listaSimilares.Add(indiceBuscado.ToString());
+
+            }
+            return listaSimilares;
+        }
+        string SONGGET(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            try
+            {
+                WebResponse response = request.GetResponse();
+                using (Stream responseStream = response.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                    return reader.ReadToEnd();
+                }
+            }
+            catch (WebException ex)
+            {
+                //WebResponse errorResponse = ex.Response;
+                //using (Stream responseStream = errorResponse.GetResponseStream())
+                //{
+                //    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                //    String errorText = reader.ReadToEnd();
+                //    // log errorText
+                //}
+                //throw;
+                System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros.txt", ex + "\n\n");
+                return "";
+            }
+        }
         public ActionResult ObtenerSimilares(string URL)
         {
             List<String> IdSpotify = new List<String>();
@@ -149,7 +174,7 @@ namespace Similitud.Web.Controllers
                 JToken tokenTrack = tokenResponse["track"];
                 String ID = tokenTrack["id"].ToString();
                 String urlTrackUpload = "http://developer.echonest.com/api/v4/track/profile?api_key=ERYL0FA7VZ24XQMOO&format=json&id=" + ID + "&bucket=audio_summary";
-                
+
 
                 String jsonResultTrack = SONGGET(urlTrackUpload);
                 JObject jObjectResult = JObject.Parse(jsonResultTrack);
@@ -157,7 +182,7 @@ namespace Similitud.Web.Controllers
                 JToken tokenTrackResult = tokenResponseResult["track"];
                 String status = tokenTrackResult["status"].ToString();
 
-                while(!status.Equals("complete"))
+                while (!status.Equals("complete"))
                 {
                     int tiempoDelay = 1000;
                     Thread.Sleep(tiempoDelay);
@@ -166,7 +191,7 @@ namespace Similitud.Web.Controllers
                     tokenResponseResult = jObjectResult["response"];
                     tokenTrackResult = tokenResponseResult["track"];
                     status = tokenTrackResult["status"].ToString();
-                } 
+                }
 
                 JToken tokenAudioSummary = tokenTrackResult["audio_summary"];
                 List<Double> descriptoresEntrada = new List<Double>();
@@ -188,56 +213,30 @@ namespace Similitud.Web.Controllers
             {
                 PartialView("PlayListSpotify", IdSpotify);
             }
-            
+
             return PartialView("PlayListSpotify", IdSpotify);
-            
+
         }
-        private List<String> getIdsSpotify(List<String> listaIndices)
+        public async Task<String> getOriginal(String url)
         {
-            List<String> getIdsSpotify = new List<String>(); ModeloSimilitudEntities db = new ModeloSimilitudEntities();
-            List<canciones> musicas = db.canciones.ToList();
-            foreach (String indice in listaIndices)
+            var client = new HttpClient();
+            var requestContent = new FormUrlEncodedContent(new[] {
+                new KeyValuePair<string, string>("api_key", "ERYL0FA7VZ24XQMOO"),
+                new KeyValuePair<string, string>("url", url),
+            });
+            Task<HttpResponseMessage> task = client.PostAsync("http://developer.echonest.com/api/v4/track/upload", requestContent);
+            HttpResponseMessage response = task.Result;
+            HttpContent responseContent = response.Content;
+
+            using (var reader = new StreamReader(await responseContent.ReadAsStreamAsync()))
             {
-                getIdsSpotify.Add((musicas[Int32.Parse(indice)]).id_spotify);
+                result = await reader.ReadToEndAsync();
+                return result;
             }
-            return getIdsSpotify;
+
         }
-        private List<String> GetSimilaresDatabase(List<Double> descriptoresEntrada)
-        {
-            List<Double> listaItems;
-            List<Double> descEntradaNormalizado = Normalizar(descriptoresEntrada);
-            int centroide = DiferenciaCentroides(descEntradaNormalizado);
-            listaItems = CancionesEnCluster(centroide);
-            List<List<Double>> matrizNormalizado = csvtoMatrix("descriptoresNormalizados");
-            List<String> listaSimilares = new List<String>();
-            List<int> listaIndicesSimilares = new List<int>();
 
-            for (int j = 0; j < 5; j++)
-            {
-                int indiceBuscado = 0,indiceLista=0;
-                double distancia = 10;
-                for (int i = 0; i < listaItems.Count;i++)
-                {
-                    if (!listaIndicesSimilares.Contains(i))
-                    {
-                        Double distanciaTemporal;
-                        int indiceNormal = Int32.Parse(listaItems[i].ToString()) - 1;//porque el indice en la matriz es uno menos
-
-                        distanciaTemporal = distanciaEuclidea(descEntradaNormalizado, matrizNormalizado[indiceNormal]);
-                        if (distanciaTemporal < distancia)
-                        {
-                            distancia = distanciaTemporal;
-                            indiceBuscado = indiceNormal;
-                            indiceLista = i;
-                        }
-                    }
-                }
-                listaIndicesSimilares.Add(indiceLista);
-                listaSimilares.Add(indiceBuscado.ToString());
-
-            }
-            return listaSimilares;
-        }
+        #region GetSimilaresDatabase
         private Double distanciaEuclidea(List<Double> vectorOriginal, List<Double> vectorbusqueda)
         {
             Double distancia=0;
@@ -275,11 +274,13 @@ namespace Similitud.Web.Controllers
             List<List<Double>> maxYmin = csvtoMatrix("maxYmin");
             for (int i = 0; i < descriptoresEntrada.Count; i++)
             {
-                listaItems.Add((descriptoresEntrada[i] - (maxYmin[1])[i]) / ((maxYmin[0])[i]- (maxYmin[1])[i]));
+                double valornormalizado = (descriptoresEntrada[i] - (maxYmin[1])[i]) / ((maxYmin[0])[i] - (maxYmin[1])[i]);
+                //if (i == 0 || i == 1) { valornormalizado = valornormalizado* 2; }
+                listaItems.Add(valornormalizado);
+
             }
             return listaItems;
         }
-
         private List<List<Double>> csvtoMatrix(string nombre){
             List<List<Double>> matrizDescriptores = new List<List<double>>();
             var reader = new StreamReader(System.IO.File.OpenRead(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\Matlab\"+nombre+".txt"));
@@ -293,68 +294,90 @@ namespace Similitud.Web.Controllers
             }
             return matrizDescriptores;
         }
-        private void ExportarCSVFormat(){
-            ModeloSimilitudEntities db = new ModeloSimilitudEntities();
-            List<canciones> musicas = db.canciones.ToList();
-            foreach (canciones cancion in musicas)
-            {
-                String descriptoresXlinea = cancion.energy.ToString() + "," + cancion.liveness.ToString() + "," + cancion.tempo.ToString() + "," + cancion.speechiness.ToString() + "," + cancion.acousticness.ToString() + "," + cancion.loudness.ToString() + "," + cancion.valence.ToString() + "," + cancion.danceability.ToString() + "," + cancion.instrumentalness.ToString()+","+cancion.key.ToString();
-                System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\Matlab\descriptores.txt", descriptoresXlinea+Environment.NewLine );
-            }
-        }
+        #endregion
 
-        public void getSimilaresLastFM(){
-            ModeloSimilitudEntities db = new ModeloSimilitudEntities();
-            Dictionary<String, String> canciones = getNames();
-            foreach(String artista in canciones.Keys){
-                int tiempo = 1000;
-                Thread.Sleep(tiempo);
-                String song = canciones[artista];
-                String jsonRequest="http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist="+artista+"&track="+song+"&api_key=7e609960174aab0894676a8cca49548b&format=json";
-                String jsonResultSimilars = SONGGET(jsonRequest);
-                JObject jObject = JObject.Parse(jsonResultSimilars);
-                JToken tokenSimilars = jObject["similartracks"];
-                Array arrayTracks = tokenSimilars["track"].ToArray();
-                for (int i = 0; i < arrayTracks.Length; i++)
-                {
-                    similares similar = new similares();
-                    JToken tokenAudioSimilar = (JToken)arrayTracks.GetValue(i);
-                    similar.Artist_Original = artista;
-                    similar.Song_Original = song;
-                    JToken tokenArtistSimilar = tokenAudioSimilar["artist"];
-                    similar.Artist_Similar = tokenArtistSimilar["name"].ToString();
-                    similar.Song_Similar = tokenAudioSimilar["name"].ToString();
-                    similar.Valor_Similitud = i;
-                    db.similares.Add(similar);
-                    int numberOfObjects = db.SaveChanges();
-                }
-            }
-        }
+        #region FuncionesCreación
         private Dictionary<String, String> getNames()
         {
             Dictionary<String, String> canciones = new Dictionary<String, String>();
-            canciones.Add("Snow patrol", "chasing cars");
-            canciones.Add("Simple plan", "Summer Paradise");
-            canciones.Add("Coldplay", "The Scientist");
-            canciones.Add("sum 41", "pieces");
-            canciones.Add("Greek Fire", "Top Of The World");
-            canciones.Add("The Killers", "Mr. Brightside");
-            canciones.Add("Frankie Ruiz", "Quiero llenarte");
-            canciones.Add("Grupo Niche", "Sin sentimiento");
-            canciones.Add("Tony vega", "Yo me quedo");
-            canciones.Add("Eagles", "One of these nights");
-            canciones.Add("B.B king", "The thrill is gone");
-            canciones.Add("The bird and the bee", "how deep is your love");
-            canciones.Add("David Garrett", "November Rain");
-            canciones.Add("Daddy Yankee", "Gasolina");
-            canciones.Add("Angel y Khriz", "Ven bailalo");
+            canciones.Add("Smoke the weed", "Snoop Lion");
+            canciones.Add("Cheerleader", "OMI");
+            canciones.Add("Man Down", "Rihanna");
+            canciones.Add("I'm still in love with you", "Sean Paul");
+            canciones.Add("No woman no cry", "Bob Marley");
+            canciones.Add("Sweat", "Inner Circle");
+            canciones.Add("Is this love", "Bob Marley");
+            canciones.Add("Me gustas tú", "Manu chao");
+            canciones.Add("Three little birds", "bob marley");
+            canciones.Add("Red red wine", "UB40");
+
+            canciones.Add("Fanática Sensual", "Plan B");
+            canciones.Add("Ay Vamos", "J. Balvin");
+            canciones.Add("Mi vecinita", "Plan B");
+            canciones.Add("Travesuras", "Nicky Jam");
+            canciones.Add("Choca", "Plan B");
+            //canciones.Add("Don Omar", "Perdido en tus ojos");
+            canciones.Add("Passion Whine", "Farruko");
+            canciones.Add("Voy a beber", "Nicky Jam");
+            canciones.Add("Una noche mas", "Kevin Roldan");
+            canciones.Add("Sigueme y te sigo", "Daddy Yankee");
+
+            canciones.Add("Usted no sabe", "Alexandre Pires");
+            canciones.Add("Quien te dijo eso", "Luis Fonsi");
+            canciones.Add("Que me alcance la vida", "Sin banderas");
+            canciones.Add("Me duele amarte", "Reik");
+            canciones.Add("Me dedique a perderte", "Alejandro Fernandez");
+            canciones.Add("Just the way you are", "Billy Joel");
+            canciones.Add("I just want to be your everything", "Andy Gibb");
+            canciones.Add("Every time you go away", "Paul Young");
+            canciones.Add("Careless Whisper", "George Michael");
+            canciones.Add("It must have been love", "Roxette");
+            canciones.Add("Baby come Back", "Player");
+
+            canciones.Add("Sweet Child O' mine", "Guns N' Roses");
+            canciones.Add("Thunderstruck", "AC/DC");
+            canciones.Add("Stairway to heaven", "Led Zeppelin");
+            canciones.Add("Enter sandman ", "Metallica");
+            canciones.Add("Welcome to the Jungle", "Guns N' Roses");
+            canciones.Add("Run to the hills", "Iron maden");
+            canciones.Add("One", "Metallica");
+            canciones.Add("Stay away", "Nirvana");
+            canciones.Add("Chop Suey", "System of a Down");
+            canciones.Add("Smells like teen spirit", "Nirvana");
+
+            canciones.Add("Dr. Dre", "Snoop Dogg");
+            canciones.Add("In da club", "50 cent");
+            canciones.Add("Without me", "Eminem");
+
+            canciones.Add("Flor palida", "Marc Anthony");
+            canciones.Add("Pequeñas cosas", "Willie gonzales");
+            canciones.Add("Tu me haces falta", "Eddie Santiago");
+            canciones.Add("Sin sentimiento", "Grupo Niche");
+            canciones.Add("En barranquilla me quedo", "Joe Arroyo");
+            canciones.Add("Desnudate mujer", "Frankie Ruiz");
+            canciones.Add("El cantante", "Hector Lavoe");
+            canciones.Add("Casi te envidio", "Andy Montañez");
+            canciones.Add("Esa mujer", "Tony Vega");
+            canciones.Add("De mi enamorate", "Tito Nieves");
+
+            canciones.Add("Don't know why", "Norah Jones");
+            canciones.Add("La vie en rose", "Louis Armstrong");
+            canciones.Add("It had to be you", "Ray Charles");
+            canciones.Add("Fly Me To The Moon", "Frank Sinatra");
+            canciones.Add("Feeling Good", "Nina Simone");
+            canciones.Add("Don't start me talkin", "Sugar Blue");
+            canciones.Add("My babe", "Little walter");
+            canciones.Add("Rock me", "James Cotton");
+            canciones.Add("All Night Boogie", "Howlin' Wolf");
+
+
             return canciones;
         }
-        
-        private void CargadoCanciones(){
+        private void CargadoCanciones()
+        {
             ModeloSimilitudEntities db = new ModeloSimilitudEntities();
             subset_track_metadataEntities sm = new subset_track_metadataEntities();
-            
+
             List<songs> musicas = sm.songs.ToList();
             string id_song, json, jsonResult;
             for (int i = 7212; i <= musicas.Count; i++)
@@ -406,58 +429,125 @@ namespace Similitud.Web.Controllers
                     }
                     catch (Exception e)
                     {
-                        System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros.txt", song.song_id+"\n");
+                        System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros.txt", song.song_id + "\n");
                     }
                 }
-                
-            }
-        }
 
-        string SONGGET(string url)
+            }
+        }//desde DB file echo nest
+        private void SaveSimilarCanciones()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            try
+            ModeloSimilitudEntities db = new ModeloSimilitudEntities();
+
+            List<similares> ListaSimilares = db.similares.ToList();
+            string id_song, json, jsonResult;
+            for (int i = 11547; i < ListaSimilares.Count; i++)
             {
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
+                ModeloSimilitudEntities database = new ModeloSimilitudEntities();
+                similares similar = ListaSimilares[i];
+                int milliseconds = 3000;
+                Thread.Sleep(milliseconds);
+                String artist_similar = similar.Artist_Similar;
+                String song_similar = similar.Song_Similar;
+
+                json = "http://developer.echonest.com/api/v4/song/search?api_key=ERYL0FA7VZ24XQMOO&format=json&results=1&artist=" + artist_similar + "&title=" + song_similar + "&bucket=id:spotify&bucket=tracks&limit=true&bucket=audio_summary";
+                jsonResult = SONGGET(json);
+                if (!jsonResult.Equals(""))
                 {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                    return reader.ReadToEnd();
+                    string cancionesNoEncontradas = "";
+                    canciones cancion = new canciones();
+                    try
+                    {
+                        JObject jObject = JObject.Parse(jsonResult);
+                        Array arraySongs = ((jObject["response"])["songs"]).ToArray();
+                        JToken tokenSongs = (JToken)(arraySongs.GetValue(0));
+                        JToken tokenSummary = tokenSongs["audio_summary"];
+
+                        cancion.energy = Double.Parse(tokenSummary["energy"].ToString());
+                        cancion.liveness = Double.Parse(tokenSummary["liveness"].ToString());
+                        cancion.tempo = Double.Parse(tokenSummary["tempo"].ToString());
+                        cancion.speechiness = Double.Parse(tokenSummary["speechiness"].ToString());
+                        cancion.acousticness = Double.Parse(tokenSummary["acousticness"].ToString());
+                        cancion.loudness = Double.Parse(tokenSummary["loudness"].ToString());
+                        cancion.valence = Double.Parse(tokenSummary["valence"].ToString());
+                        cancion.danceability = Double.Parse(tokenSummary["danceability"].ToString());
+                        cancion.instrumentalness = Double.Parse(tokenSummary["instrumentalness"].ToString());
+                        cancion.key = int.Parse(tokenSummary["key"].ToString());
+
+                        Array arrayTracks = tokenSongs["tracks"].ToArray();
+                        JToken tokenTracks = (JToken)arrayTracks.GetValue(0);
+                        cancion.id_spotify = tokenTracks["foreign_id"].ToString();
+
+                        cancion.track_id = tokenTracks["id"].ToString();
+                        cancion.title = tokenSongs["title"].ToString();
+                        cancion.song_id = tokenSongs["id"].ToString();
+                        cancion.artist_id = tokenSongs["artist_id"].ToString();
+                        cancion.artist_mbid = "";//falta
+                        cancion.artist_name = tokenSongs["artist_name"].ToString();
+                        cancion.duration = Double.Parse(tokenSummary["duration"].ToString());
+                        cancion.artist_familiarity = 0;//falta
+                        cancion.artist_hotttnesss = 0;//falta
+                        cancion.year = 0;//falta
+                        database.canciones.Add(cancion);
+                        int numberOfObjects = database.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+
+                        System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\noencontradosEchoNest.txt", similar.Song_Similar + "-" + similar.Artist_Similar + i + Environment.NewLine);
+                    }
                 }
-            }
-            catch (WebException ex)
-            {
-                //WebResponse errorResponse = ex.Response;
-                //using (Stream responseStream = errorResponse.GetResponseStream())
-                //{
-                //    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                //    String errorText = reader.ReadToEnd();
-                //    // log errorText
-                //}
-                //throw;
-                System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\registros.txt", ex+ "\n\n");
-                return "";
+
             }
         }
-
-        public  async Task<String> getOriginal(String url)
+        private void ExportarCSVFormat()
         {
-            var client = new HttpClient();
-            var requestContent = new FormUrlEncodedContent(new [] {
-                new KeyValuePair<string, string>("api_key", "ERYL0FA7VZ24XQMOO"),
-                new KeyValuePair<string, string>("url", url),
-            });
-            Task<HttpResponseMessage> task = client.PostAsync("http://developer.echonest.com/api/v4/track/upload", requestContent);
-            HttpResponseMessage response = task.Result;
-            HttpContent responseContent = response.Content;
-            
-            using (var reader = new StreamReader(await responseContent.ReadAsStreamAsync()))
+            ModeloSimilitudEntities db = new ModeloSimilitudEntities();
+            List<canciones> musicas = db.canciones.ToList();
+            foreach (canciones cancion in musicas)
             {
-                result=await reader.ReadToEndAsync();
-                return result;
+                String descriptoresXlinea = cancion.energy.ToString() + "," + cancion.tempo.ToString() + "," + cancion.speechiness.ToString() + "," + cancion.acousticness.ToString() + "," + cancion.loudness.ToString() + "," + cancion.valence.ToString() + "," + cancion.danceability.ToString() + "," + cancion.instrumentalness.ToString() + "," + cancion.key.ToString();
+                System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\Matlab\descriptores.txt", descriptoresXlinea + Environment.NewLine);
             }
-
         }
+        public void getSimilaresLastFM()
+        {
+            ModeloSimilitudEntities db = new ModeloSimilitudEntities();
+            Dictionary<String, String> canciones = getNames();
+            foreach (String cancion in canciones.Keys)
+            {
+                int tiempo = 2000;
+                Thread.Sleep(tiempo);
+                String artista = canciones[cancion];
+                String jsonRequest = "http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=" + artista + "&track=" + cancion + "&api_key=7e609960174aab0894676a8cca49548b&format=json";
+                try
+                {
+                    String jsonResultSimilars = SONGGET(jsonRequest);
+                    JObject jObject = JObject.Parse(jsonResultSimilars);
+                    JToken tokenSimilars = jObject["similartracks"];
+                    Array arrayTracks = tokenSimilars["track"].ToArray();
+                    for (int i = 0; i < arrayTracks.Length; i++)
+                    {
+                        similares similar = new similares();
+                        JToken tokenAudioSimilar = (JToken)arrayTracks.GetValue(i);
+                        similar.Artist_Original = artista;
+                        similar.Song_Original = cancion;
+                        JToken tokenArtistSimilar = tokenAudioSimilar["artist"];
+                        similar.Artist_Similar = tokenArtistSimilar["name"].ToString();
+                        similar.Song_Similar = tokenAudioSimilar["name"].ToString();
+                        similar.Valor_Similitud = i;
+                        db.similares.Add(similar);
+                        int numberOfObjects = db.SaveChanges();
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.IO.File.AppendAllText(@"C:\Users\FastSolution\Documents\Visual Studio 2013\Projects\BusquedaSimilitud\Similitud.Web\App_Data\log\noencontrados.txt", cancion + "-" + artista + Environment.NewLine);
+                }
+
+            }
+        }
+        #endregion
 
         #region CodigoInservible
         public static async void Task2()
